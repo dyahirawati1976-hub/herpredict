@@ -5,7 +5,6 @@ import numpy as np
 from groq import Groq
 import os
 from dotenv import load_dotenv
-from groq import Groq # Pastikan import Groq tetap ada
 
 app = Flask(__name__)
 
