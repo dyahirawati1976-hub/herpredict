@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerPredict.AI — Clinical Dashboard</title>
+    <meta name="description" content="Platform prediksi diabetes berbasis AI menggunakan 8 biomarker klinis kunci dengan model XGBoost & Random Forest untuk deteksi dini yang presisi.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <div class="nav-logo"><i class="fas fa-dna"></i></div>
+            <span class="nav-title">HERPREDICT<span>.AI</span></span>
+        </a>
+        <div class="nav-badge-live">
+            <span class="dot"></span> Model Aktif · 8 Fitur
+        </div>
+    </nav>
+
+    <!-- ─── HERO BANNER ─── -->
+    <section class="hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Ensemble XGBoost + Random Forest · Deteksi Dini Diabetes
+        </div>
+
+        <h1>Data-Driven <span class="gradient-text">Diagnosis.</span></h1>
+        <p>Platform skrining diabetes dini berbasis AI yang menganalisis 8 biomarker klinis terpilih secara presisi — cepat, akurat, dan dapat diandalkan.</p>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Fitur Klinis</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">&lt; 2s</div>
+                <div class="stat-label">Inference Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">2 Model</div>
+                <div class="stat-label">Ensemble AI</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Available</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="main-content">
+
+        <!-- Dashboard Info Cards -->
+        <div class="dashboard-grid">
+            <div class="info-card">
+                <div class="info-card-icon icon-indigo"><i class="fas fa-brain"></i></div>
+                <div class="info-card-body">
+                    <div class="info-card-value">XGBoost</div>
+                    <div class="info-card-label">Model Utama</div>
+                    <div class="info-card-sub"><i class="fas fa-check-circle"></i> Aktif</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon icon-green"><i class="fas fa-tree"></i></div>
+                <div class="info-card-body">
+                    <div class="info-card-value">Random Forest</div>
+                    <div class="info-card-label">Model Ensemble</div>
+                    <div class="info-card-sub"><i class="fas fa-check-circle"></i> Aktif</div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon icon-amber"><i class="fas fa-robot"></i></div>
+                <div class="info-card-body">
+                    <div class="info-card-value">Groq AI</div>
+                    <div class="info-card-label">Rekomendasi Klinis</div>
+                    <div class="info-card-sub"><i class="fas fa-sparkles"></i> Powered by Groq</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prediction Form Card -->
+        <div class="form-card">
+
+            <!-- Header -->
+            <div class="form-header">
+                <div class="form-header-left">
+                    <div class="step-indicator" id="stepLabel">Langkah 01 / 03</div>
+                    <h2 id="stepTitle">Data Dasar & Antropometri</h2>
+                </div>
+                <div class="progress-group">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 33%"></div>
+                    </div>
+                    <div class="progress-percent" id="percentLabel">33%</div>
+                </div>
+            </div>
+
+            <!-- Presets Bar -->
+            <div class="presets-bar">
+                <span class="presets-label"><i class="fas fa-wand-magic-sparkles"></i> Quick Fill:</span>
+                <button class="preset-btn healthy" onclick="autoFill('rendah')"><i class="fas fa-circle-check"></i> Sehat</button>
+                <button class="preset-btn warning" onclick="autoFill('sedang')"><i class="fas fa-triangle-exclamation"></i> Waspada</button>
+                <button class="preset-btn critical" onclick="autoFill('tinggi')"><i class="fas fa-circle-exclamation"></i> Kritis</button>
+            </div>
+
+            <!-- Form Body -->
+            <div class="form-body">
+
+                <form id="predictionForm" novalidate>
+
+                    <!-- ══ STEP 1: Data Dasar & Antropometri ══ -->
+                    <div id="step1" class="step-content active">
+                        <div class="section-label" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <h3>Data Dasar & Antropometri</h3>
+                                <p>Masukkan usia dan data berat/tinggi badan pasien.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid" style="margin-bottom: 1.25rem;">
+                            <div class="field-group">
+                                <label class="field-label">Usia (Tahun)</label>
+                                <input type="number" name="age" required class="field-input" placeholder="Contoh: 45" min="1" max="120" id="inputAge">
+                            </div>
+                            <div class="field-group">
+                                <!-- placeholder col -->
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Berat Badan (Kg)</label>
+                                <input type="number" id="weight" oninput="hitungBMI()" class="field-input" placeholder="Contoh: 70" min="1">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Tinggi Badan (Cm)</label>
+                                <input type="number" id="height" oninput="hitungBMI()" class="field-input" placeholder="Contoh: 165" min="1">
+                            </div>
+                        </div>
+
+                        <!-- BMI Display -->
+                        <div class="bmi-panel">
+                            <div class="bmi-left">
+                                <div class="bmi-chip"><span class="dot"></span> Body Mass Index</div>
+                                <div id="bmiStatus">Menunggu input berat &amp; tinggi...</div>
+                            </div>
+                            <div class="bmi-right">
+                                <input type="number" step="0.1" name="bmi" id="bmiResult" readonly required value="0">
+                                <span class="bmi-unit">kg/m²</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1.75rem;">
+                            <button type="button" onclick="nextStep(2)" class="btn-nav-next">
+                                Lanjut ke Riwayat Medis <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ══ STEP 2: Riwayat Klinis & Gaya Hidup ══ -->
+                    <div id="step2" class="step-content">
+                        <div class="section-label" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <h3>Riwayat Klinis & Gaya Hidup</h3>
+                                <p>Pilih kondisi medis yang relevan dan informasi gaya hidup pasien.</p>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox Riwayat Medis -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem;">
+                            <label class="check-card">
+                                <input type="checkbox" name="family_history_diabetes" value="1" id="chkFamily">
+                                <div class="card-inner">
+                                    <div class="card-icon icon-indigo"><i class="fas fa-users"></i></div>
+                                    <span class="card-text">Riwayat Diabetes dalam Keluarga</span>
+                                </div>
+                                <div class="custom-checkbox"><i class="fas fa-check"></i></div>
+                            </label>
+                            <label class="check-card">
+                                <input type="checkbox" name="hypertension_history" value="1" id="chkHyper">
+                                <div class="card-inner">
+                                    <div class="card-icon" style="background:#ffe4e6;color:#f43f5e;"><i class="fas fa-heart-pulse"></i></div>
+                                    <span class="card-text">Riwayat Hipertensi (Tekanan Darah Tinggi)</span>
+                                </div>
+                                <div class="custom-checkbox"><i class="fas fa-check"></i></div>
+                            </label>
+                        </div>
+
+                        <!-- Status Merokok -->
+                        <div class="field-group" style="margin-bottom: 1.5rem;">
+                            <label class="field-label">Status Merokok</label>
+                            <select name="smoking_status" class="field-input" id="smokingSelect">
+                                <option value="0">Tidak Pernah Merokok (Never)</option>
+                                <option value="1">Mantan Perokok (Former)</option>
+                                <option value="2">Perokok Aktif (Current)</option>
+                            </select>
+                        </div>
+
+                        <!-- Aktivitas Fisik -->
+                        <div class="field-group" style="margin-bottom: 1.5rem;">
+                            <label class="field-label">Aktivitas Fisik (Menit / Minggu)</label>
+                            <input type="number" name="physical_activity_minutes_per_week" required class="field-input" placeholder="Contoh: 150 (WHO rekomendasikan ≥150 mnt/minggu)" min="0" id="inputActivity">
+                            <div class="field-hint">
+                                <i class="fas fa-info-circle"></i>
+                                WHO merekomendasikan minimal <strong>150 menit</strong> aktivitas sedang per minggu.
+                            </div>
+                        </div>
+
+                        <div class="nav-row">
+                            <button type="button" onclick="nextStep(1)" class="btn-nav-back"><i class="fas fa-arrow-left"></i> Kembali</button>
+                            <button type="button" onclick="nextStep(3)" class="btn-nav-next">Lanjut ke Data Lab <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- ══ STEP 3: Data Laboratorium ══ -->
+                    <div id="step3" class="step-content">
+                        <div class="section-label" style="margin-bottom: 1.5rem;">
+                            <div>
+                                <h3>Data Laboratorium</h3>
+                                <p>Masukkan hasil pemeriksaan laboratorium terbaru pasien.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid" style="margin-bottom: 1.25rem;">
+                            <div class="field-group">
+                                <label class="field-label">
+                                    Glukosa Puasa (mg/dL)
+                                    <span class="label-required">*Wajib</span>
+                                </label>
+                                <input type="number" step="0.1" name="glucose_fasting" required class="field-input" placeholder="Normal: 70–99 mg/dL" min="0" id="inputGlucose">
+                                <div class="field-hint"><i class="fas fa-info-circle"></i> Diukur setelah puasa minimal 8 jam.</div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">
+                                    Kadar HbA1c (%)
+                                    <span class="label-optional">Opsional</span>
+                                </label>
+                                <input type="number" step="0.1" name="hba1c" class="field-input" style="border-color:#c7d2fe;background:var(--primary-bg);" placeholder="Normal: &lt; 5.7%" min="0" max="20" id="inputHba1c">
+                                <div class="field-hint"><i class="fas fa-info-circle"></i> Rata-rata gula darah 2–3 bulan terakhir.</div>
+                            </div>
+                        </div>
+
+                        <!-- Lab Reference Card -->
+                        <div class="lab-ref-card">
+                            <div class="lab-ref-title"><i class="fas fa-flask"></i> Referensi Nilai Normal</div>
+                            <div class="lab-ref-grid">
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon normal">✓</span>
+                                    <div>
+                                        <div class="ref-label">Glukosa Puasa Normal</div>
+                                        <div class="ref-val">70 – 99 mg/dL</div>
+                                    </div>
+                                </div>
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon warning">!</span>
+                                    <div>
+                                        <div class="ref-label">Prediabetes</div>
+                                        <div class="ref-val">100 – 125 mg/dL</div>
+                                    </div>
+                                </div>
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon danger">✕</span>
+                                    <div>
+                                        <div class="ref-label">Diabetes</div>
+                                        <div class="ref-val">≥ 126 mg/dL</div>
+                                    </div>
+                                </div>
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon normal">✓</span>
+                                    <div>
+                                        <div class="ref-label">HbA1c Normal</div>
+                                        <div class="ref-val">&lt; 5.7%</div>
+                                    </div>
+                                </div>
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon warning">!</span>
+                                    <div>
+                                        <div class="ref-label">HbA1c Prediabetes</div>
+                                        <div class="ref-val">5.7 – 6.4%</div>
+                                    </div>
+                                </div>
+                                <div class="lab-ref-item">
+                                    <span class="ref-icon danger">✕</span>
+                                    <div>
+                                        <div class="ref-label">HbA1c Diabetes</div>
+                                        <div class="ref-val">≥ 6.5%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" style="margin-top:1.5rem;">
+                            <i class="fas fa-sparkles" style="color:#fde68a;"></i>
+                            Generate Prediksi AI
+                        </button>
+
+                        <div style="margin-top: 10px;">
+                            <button type="button" onclick="nextStep(2)" class="btn-nav-back" style="width:100%;"><i class="fas fa-arrow-left"></i> Kembali</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- Loading State -->
+                <div id="loading">
+                    <div class="spinner-ring"></div>
+                    <h3>Menganalisis Biomarker...</h3>
+                    <p>Menjalankan Ensemble XGBoost + Random Forest</p>
+                </div>
+
+                <!-- Result Area -->
+                <div id="resultArea">
+                    <div class="result-hero">
+                        <div class="result-badge">AI Prediction Outcome</div>
+                        <div id="resHasil"></div>
+                        <div class="confidence-row">
+                            Confidence Score: <span id="resSkor"></span>
+                        </div>
+                    </div>
+
+                    <!-- Ensemble Detail -->
+                    <div class="ensemble-detail" id="ensembleDetail">
+                        <div class="ensemble-title"><i class="fas fa-layer-group"></i> Ensemble Model Detail</div>
+                        <div class="ensemble-row">
+                            <div class="ensemble-item">
+                                <div class="ens-label">XGBoost</div>
+                                <div class="ens-bar-wrap">
+                                    <div class="ens-bar xgb-bar" id="barXgb"></div>
+                                </div>
+                                <div class="ens-val" id="valXgb"></div>
+                            </div>
+                            <div class="ensemble-item">
+                                <div class="ens-label">Random Forest</div>
+                                <div class="ens-bar-wrap">
+                                    <div class="ens-bar rf-bar" id="barRf"></div>
+                                </div>
+                                <div class="ens-val" id="valRf"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="rekomendasiTrigger">
+                        <button class="btn-groq" onclick="mintaSaranAI()" id="btngroq">
+                            <i class="fas fa-robot"></i>
+                            Dapatkan Rekomendasi Klinis Lengkap
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div id="saranArea">
+                        <div class="saran-header">
+                            <i class="fas fa-file-medical"></i>
+                            <span>Verified AI Clinical Report</span>
+                        </div>
+                        <div id="resSaran"></div>
+                    </div>
+
+                    <button class="btn-reset" onclick="location.reload()">
+                        <i class="fas fa-rotate-left"></i> Mulai Sesi Baru
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 HerPredict Enterprise — Deteksi Dini Diabetes · 8 Fitur Klinis &nbsp;|&nbsp; Didukung oleh Groq AI
+        </div>
+
+    </main>
+
+    <script>
+        let dataPasienTerakhir = {};
+
+        // ─── STEP NAVIGATION + VALIDASI PER-STEP ───
+        function nextStep(toStep) {
+            const fromStep = parseInt(document.querySelector('.step-content.active').id.replace('step', ''));
+
+            // Validasi sebelum maju ke step berikutnya
+            if (toStep > fromStep) {
+                if (fromStep === 1) {
+                    const age    = document.getElementById('inputAge').value;
+                    const weight = document.getElementById('weight').value;
+                    const height = document.getElementById('height').value;
+                    const bmi    = document.getElementById('bmiResult').value;
+                    if (!age || parseFloat(age) <= 0) {
+                        showFieldError('inputAge', 'Usia harus diisi.');
+                        return;
+                    }
+                    if (!weight || !height || parseFloat(bmi) <= 0) {
+                        showFieldError('weight', 'Berat dan tinggi badan harus diisi agar BMI dapat dihitung.');
+                        return;
+                    }
+                }
+                if (fromStep === 2) {
+                    const activity = document.querySelector('[name="physical_activity_minutes_per_week"]').value;
+                    if (activity === '' || parseFloat(activity) < 0) {
+                        showFieldError('inputActivity', 'Aktivitas fisik harus diisi (masukkan 0 jika tidak aktif).');
+                        return;
+                    }
+                }
+            }
+
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + toStep).classList.add('active');
+
+            const percent = toStep === 1 ? 33 : toStep === 2 ? 66 : 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('percentLabel').innerText = percent + '%';
+
+            const titles = {
+                1: 'Data Dasar & Antropometri',
+                2: 'Riwayat Klinis & Gaya Hidup',
+                3: 'Data Laboratorium'
+            };
+            document.getElementById('stepLabel').innerText = `Langkah 0${toStep} / 03`;
+            document.getElementById('stepTitle').innerText = titles[toStep];
+
+            window.scrollTo({ top: document.querySelector('.form-card').offsetTop - 30, behavior: 'smooth' });
+        }
+
+        // ─── TAMPILKAN ERROR PADA FIELD ───
+        function showFieldError(fieldId, msg) {
+            const el = document.getElementById(fieldId);
+            if (!el) return;
+            el.style.borderColor = 'var(--danger)';
+            el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.15)';
+            el.focus();
+            // Hapus styling error setelah 3 detik
+            const clear = () => {
+                el.style.borderColor = '';
+                el.style.boxShadow   = '';
+                el.removeEventListener('input', clear);
+                el.removeEventListener('change', clear);
+            };
+            el.addEventListener('input',  clear);
+            el.addEventListener('change', clear);
+            // Toast notif singkat
+            showToast(msg, 'error');
+        }
+
+        // ─── TOAST NOTIFICATION ───
+        function showToast(msg, type = 'info') {
+            const existing = document.getElementById('toastMsg');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.id = 'toastMsg';
+            toast.style.cssText = `
+                position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+                background: ${type === 'error' ? '#ef4444' : '#4f46e5'};
+                color: white; padding: 12px 24px; border-radius: 12px;
+                font-size: 0.85rem; font-weight: 600; font-family: Inter, sans-serif;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2); z-index: 9999;
+                animation: fadeUp 0.3s ease;
+            `;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ─── BMI CALCULATOR ───
+        function hitungBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const bmiResult = document.getElementById('bmiResult');
+            const bmiStatus = document.getElementById('bmiStatus');
+
+            if (weight > 0 && height > 0) {
+                const hm  = height / 100;
+                const bmi = (weight / (hm * hm)).toFixed(1);
+                bmiResult.value = bmi;
+
+                if (bmi < 18.5) {
+                    bmiStatus.innerText = 'Underweight';
+                    bmiStatus.style.color = '#fbbf24';
+                } else if (bmi <= 24.9) {
+                    bmiStatus.innerText = 'Berat Badan Normal ✓';
+                    bmiStatus.style.color = '#34d399';
+                } else if (bmi <= 29.9) {
+                    bmiStatus.innerText = 'Overweight';
+                    bmiStatus.style.color = '#fb923c';
+                } else {
+                    bmiStatus.innerText = 'Obesitas';
+                    bmiStatus.style.color = '#f87171';
+                }
+            }
+        }
+
+        // ─── FORM SUBMIT → PREDICT ───
+        document.getElementById('predictionForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+
+            // ─── Validasi Manual sebelum submit ───
+            const age      = document.getElementById('inputAge').value;
+            const bmi      = document.getElementById('bmiResult').value;
+            const weight   = document.getElementById('weight').value;
+            const height   = document.getElementById('height').value;
+            const glucose  = document.getElementById('inputGlucose').value;
+            const activity = document.querySelector('[name="physical_activity_minutes_per_week"]').value;
+
+            if (!age || parseFloat(age) <= 0) {
+                showToast('⚠️ Usia belum diisi. Kembali ke Langkah 1.', 'error'); return;
+            }
+            if (!weight || !height || parseFloat(bmi) <= 0) {
+                showToast('⚠️ Berat/Tinggi badan belum diisi. Kembali ke Langkah 1.', 'error'); return;
+            }
+            if (activity === '' || parseFloat(activity) < 0) {
+                showToast('⚠️ Aktivitas fisik belum diisi. Kembali ke Langkah 2.', 'error'); return;
+            }
+            if (!glucose || parseFloat(glucose) <= 0) {
+                showFieldError('inputGlucose', 'Glukosa puasa harus diisi.');
+                showToast('⚠️ Glukosa puasa wajib diisi.', 'error'); return;
+            }
+
+            form.classList.add('hidden');
+            document.getElementById('loading').style.display = 'block';
+
+            const formData = new FormData(form);
+            const data    = Object.fromEntries(formData.entries());
+
+            // Checkbox yang tidak dicentang tidak masuk FormData → default ke 0
+            ['family_history_diabetes', 'hypertension_history'].forEach(key => {
+                data[key] = data[key] ? 1 : 0;
+            });
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+
+                    if (res.status === 'success') {
+                        document.getElementById('resultArea').style.display = 'block';
+                        const resHasil = document.getElementById('resHasil');
+                        const resSkor  = document.getElementById('resSkor');
+
+                        const labelFinal  = res.hasil;
+                        const skorXgb     = parseFloat(res.skor);
+                        const skorRf      = parseFloat(res.skor_rf);
+                        const skorEns     = parseFloat(res.skor_ensemble);
+
+                        // ─── Confidence = keyakinan MODEL terhadap label yang diprediksi ───
+                        // RISIKO TINGGI  → prob diabetes tinggi  → confidence = skorEns
+                        // RISIKO RENDAH  → prob diabetes rendah  → confidence = 100 − skorEns
+                        // RISIKO SEDANG  → di tengah, pakai jarak ke batas terdekat
+                        let confidence;
+                        if (labelFinal === 'RISIKO TINGGI') {
+                            resHasil.style.color = 'var(--danger)';
+                            confidence = skorEns;                       // e.g. 99%
+                        } else if (labelFinal === 'RISIKO RENDAH') {
+                            resHasil.style.color = 'var(--success)';
+                            confidence = 100 - skorEns;                 // e.g. 100-8 = 92%
+                        } else {
+                            resHasil.style.color = 'var(--warning)';
+                            // Sedang: jarak ke threshold bawah (25) atau atas (50)
+                            // → pakai seberapa jauh dari tengah rentang
+                            confidence = 50 + Math.abs(skorEns - 37.5); // rentang sedang ~25-50%
+                            confidence = Math.min(confidence, 85);       // cap agar tidak misleading
+                        }
+
+                        resHasil.innerText = labelFinal;
+                        resSkor.innerText  = confidence.toFixed(1) + '% confidence';
+
+                        // ─── Ensemble bars: tampilkan confidence per-model (sama logika confidence score) ───
+                        const confXgb = (labelFinal === 'RISIKO RENDAH') ? (100 - skorXgb) : skorXgb;
+                        const confRf  = (labelFinal === 'RISIKO RENDAH') ? (100 - skorRf)  : skorRf;
+
+                        document.getElementById('barXgb').style.width = Math.min(confXgb, 100) + '%';
+                        document.getElementById('valXgb').innerText    = confXgb.toFixed(1) + '%';
+                        document.getElementById('barRf').style.width   = Math.min(confRf, 100) + '%';
+                        document.getElementById('valRf').innerText      = confRf.toFixed(1) + '%';
+                        document.getElementById('ensembleDetail').style.display = 'block';
+
+                        dataPasienTerakhir = { hasil: labelFinal, profil: data };
+                        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Error: ' + (res.message || 'Prediksi gagal.'));
+                        location.reload();
+                    }
+                }, 1500);
+
+            } catch (err) {
+                alert('Koneksi ke server gagal. Silakan coba lagi.');
+                location.reload();
+            }
+        };
+
+        // ─── GROQ RECOMMENDATION ───
+        async function mintaSaranAI() {
+            const btn      = document.getElementById('btngroq');
+            const resSaran = document.getElementById('resSaran');
+            const saranArea = document.getElementById('saranArea');
+
+            btn.disabled  = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Menyusun Rekomendasi Klinis...`;
+
+            try {
+                const response = await fetch('/get_recommendation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataPasienTerakhir)
+                });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    resSaran.innerHTML = marked.parse(res.saran);
+                    saranArea.style.display = 'block';
+                    document.getElementById('rekomendasiTrigger').style.display = 'none';
+                    setTimeout(() => saranArea.scrollIntoView({ behavior: 'smooth' }), 100);
+                } else {
+                    alert('AI Error: ' + (res.message || 'Coba lagi nanti.'));
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-robot"></i> Coba Lagi`;
+                }
+            } catch (err) {
+                alert('AI Engine sedang sibuk. Silakan coba lagi.');
+                btn.disabled  = false;
+                btn.innerHTML = `<i class="fas fa-robot"></i> Coba Lagi`;
+            }
+        }
+
+        // ─── AUTO FILL PRESETS (8 Fitur) ───
+        function autoFill(tipe) {
+            const age      = document.getElementsByName('age')[0];
+            const weight   = document.getElementById('weight');
+            const height   = document.getElementById('height');
+            const family   = document.getElementsByName('family_history_diabetes')[0];
+            const hyper    = document.getElementsByName('hypertension_history')[0];
+            const smoking  = document.getElementsByName('smoking_status')[0];
+            const activity = document.getElementsByName('physical_activity_minutes_per_week')[0];
+            const glucose  = document.getElementsByName('glucose_fasting')[0];
+            const hba1c    = document.getElementsByName('hba1c')[0];
+
+            if (tipe === 'rendah') {
+                age.value      = 28;
+                weight.value   = 60; height.value = 170;
+                family.checked = false; hyper.checked = false;
+                smoking.value  = 0;   // Never
+                activity.value = 200;
+                glucose.value  = 85;  hba1c.value = 5.0;
+            } else if (tipe === 'sedang') {
+                age.value      = 50;
+                weight.value   = 88; height.value = 160;
+                family.checked = true; hyper.checked = true;
+                smoking.value  = 1;   // Former
+                activity.value = 60;
+                glucose.value  = 112; hba1c.value = 6.2;
+            } else if (tipe === 'tinggi') {
+                age.value      = 63;
+                weight.value   = 105; height.value = 162;
+                family.checked = true; hyper.checked = true;
+                smoking.value  = 2;   // Current
+                activity.value = 0;
+                glucose.value  = 148; hba1c.value = 8.5;
+            }
+            hitungBMI();
+        }
+    </script>
+
+</body>
+</html>
