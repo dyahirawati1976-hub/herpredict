@@ -3,6 +3,9 @@ import joblib
 import pandas as pd
 import numpy as np
 from groq import Groq
+import os
+from dotenv import load_dotenv
+from groq import Groq # Pastikan import Groq tetap ada
 
 app = Flask(__name__)
 
@@ -22,8 +25,14 @@ SMOKING_MAP = {
 }
 
 # ─── Konfigurasi Groq AI ───
-GROQ_API_KEY = "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"
-client = Groq(api_key=GROQ_API_KEY)
+# Memuat variabel dari file .env
+load_dotenv()
+
+# Mengambil API Key dari environment variable
+api_key = os.getenv("GROQ_API_KEY")
+
+# Inisialisasi client Groq
+client = Groq(api_key=api_key)
 
 
 @app.route('/')
